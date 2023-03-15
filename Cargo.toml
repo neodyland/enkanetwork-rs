@@ -1,6 +1,6 @@
 [package]
 name = "enkanetwork-rs"
-version = "0.0.3"
+version = "0.0.4"
 license = "MIT/Apache-2.0"
 authors = ["eratou"]
 edition = "2021"
@@ -27,7 +27,7 @@ image = { version = "0.24", default-features = false , features = ["png"]}
 imageproc = { version = "0.23.0", optional = true }
 rusttype = { version = "0.9.3", optional = true }
 woff2 = { version = "0.3.0", optional = true }
-rust-woff = { git="https://github.com/eratou/rust-woff" , optional = true}
+rust-woff = { git="https://github.com/neodyland/rust-woff" , optional = true}
 
 zip = { version = "0.6.3", default-features = false  , features = ["deflate"], optional = true}
 usvg = { version = "0.28.0", optional = true}
