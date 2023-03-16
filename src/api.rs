@@ -29,7 +29,7 @@ impl EnkaNetwork {
     pub fn new() -> std::io::Result<Self> {
         let client = Self::client_builder();
         let client = client.build().ok();
-        let assets_cache = MemoryCache::new(String::from("./cache/assets/"))?;
+        let assets_cache =  MemoryCache::new(String::from("./cache/assets/"))?;
         let user_cache = MemoryCache::new(String::from("./cache/u/"))?;
         let mut api = Self::from(client, assets_cache, user_cache);
         if let Ok(rt) = tokio::runtime::Builder::new_current_thread()
