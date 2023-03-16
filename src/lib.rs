@@ -12,6 +12,7 @@ use futures::Future;
 pub use icon::IconData;
 pub use io::MemoryCache;
 pub use store::*;
+mod reqwest;
 
 #[cfg(feature = "text")]
 mod textrender;

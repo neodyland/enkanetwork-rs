@@ -34,8 +34,13 @@ impl MemoryCache {
             limit_size,
         }
     }
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn new(disk_dir: String) -> std::io::Result<Self> {
         std::fs::create_dir_all(&disk_dir)?;
+        Ok(Self::from(Some(disk_dir), 32, 2 * 1024 * 1024))
+    }
+    #[cfg(target_arch = "wasm32")]
+    pub fn new(disk_dir: String) -> std::io::Result<Self> {
         Ok(Self::from(Some(disk_dir), 32, 2 * 1024 * 1024))
     }
     pub async fn set(

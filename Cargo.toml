@@ -1,6 +1,6 @@
 [package]
 name = "enkanetwork-rs"
-version = "0.0.4"
+version = "0.0.5"
 license = "MIT/Apache-2.0"
 authors = ["eratou"]
 edition = "2021"
@@ -8,21 +8,21 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-default = ["async-io","text","vector-icon"]
-text = ["imageproc","rusttype","woff2","rust-woff"]
-vector-icon = ["zip","usvg","resvg"]
+default = ["async-io", "text", "vector-icon"]
+text = ["imageproc", "rusttype", "woff2", "rust-woff"]
+vector-icon = ["zip", "usvg", "resvg"]
 async-io = []
 
 [dependencies]
 futures = "0.3"
 async-std = "1.12"
 tokio = { version = "1.23", features = ["rt"]}
-reqwest = { version = "0.11", default-features = false , features = ["gzip"] }
 urlencoding="^2.1.2"
 serde_json = "^1.0.89"
 serde = "^1.0.100"
 filetime = "0.2"
 image = { version = "0.24", default-features = false , features = ["png"]}
+reqwest-wasm = { version = "0.11.16", default-features = false , features = ["gzip"] }
 
 imageproc = { version = "0.23.0", optional = true }
 rusttype = { version = "0.9.3", optional = true }
@@ -35,7 +35,7 @@ resvg = { version = "0.28.0", optional = true}
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 tokio = { version = "*", features = ["rt-multi-thread"]}
-reqwest = { version = "*", default-features = false , features = ["rustls-tls-native-roots"] }
+reqwest = { version = "0.11", default-features = false , features = ["gzip"] }
 
 [dev-dependencies]
 chrono = "^0.4.23"

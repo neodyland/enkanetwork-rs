@@ -1,5 +1,5 @@
 use image::DynamicImage;
-use reqwest::{header::HeaderMap, Client, ClientBuilder};
+use crate::reqwest::{header::HeaderMap, Client, ClientBuilder};
 use std::{sync::Arc, time::SystemTime};
 
 use crate::{
@@ -96,14 +96,14 @@ impl EnkaNetwork {
             }
         }
     }
-    pub async fn fetch_user(&self, uid: i32) -> Result<RawUserData, Option<reqwest::Error>> {
+    pub async fn fetch_user(&self, uid: i32) -> Result<RawUserData, Option<crate::reqwest::Error>> {
         let contents = self
             .request(format!("https://enka.network/api/uid/{}/", uid))
             .await?;
         let lastupdate = SystemTime::now();
         Ok(RawUserData::from_raw(contents, uid, lastupdate))
     }
-    async fn request(&self, url: impl AsRef<str>) -> Result<Vec<u8>, Option<reqwest::Error>> {
+    async fn request(&self, url: impl AsRef<str>) -> Result<Vec<u8>, Option<crate::reqwest::Error>> {
         //println!("request {}",url.as_ref());
         let url = url.as_ref().to_owned();
         let mut request = match &self.client {
