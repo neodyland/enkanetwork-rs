@@ -26,6 +26,8 @@ impl EnkaNetwork {
     #[cfg(target_arch = "wasm32")]
     fn client_builder() -> ClientBuilder {
         Client::builder()
+            .timeout(std::time::Duration::from_secs(30))
+            .user_agent(crate::USER_AGENT)
     }
     //#[cfg(target_arch = "wasm32")]
     pub async fn new_wasm() -> std::io::Result<Self> {
