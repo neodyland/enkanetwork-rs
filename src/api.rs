@@ -1,6 +1,7 @@
-use image::DynamicImage;
 use crate::reqwest::{header::HeaderMap, Client, ClientBuilder};
-use std::{sync::Arc, time::SystemTime};
+use crate::SystemTime;
+use image::DynamicImage;
+use std::sync::Arc;
 
 use crate::{
     store::{self, StoreValue},
@@ -26,10 +27,44 @@ impl EnkaNetwork {
     fn client_builder() -> ClientBuilder {
         Client::builder()
     }
+    //#[cfg(target_arch = "wasm32")]
+    pub async fn new_wasm() -> std::io::Result<Self> {
+        let client = Self::client_builder();
+        let client = client.build().ok();
+        let assets_cache = MemoryCache::new(String::from("./cache/assets/"))?;
+        const CHARACTERS_JSON: &str = include_str!("../assets/characters.json");
+        const LOC_JSON: &str = include_str!("../assets/loc.json");
+        const NAMECARDS_JSON: &str = include_str!("../assets/namecards.json");
+        const CHARACTERS_IMAGE_JSON: &str = include_str!("../assets/image_characters.json");
+        assets_cache
+            .set(
+                "store/characters.json",
+                CHARACTERS_JSON.as_bytes(),
+                SystemTime::now(),
+            )
+            .await?;
+        assets_cache
+            .set("store/loc.json", LOC_JSON.as_bytes(), SystemTime::now())
+            .await?;
+        assets_cache
+            .set(
+                "store/namecards.json",
+                NAMECARDS_JSON.as_bytes(),
+                SystemTime::now(),
+            )
+            .await?;
+        assets_cache
+            .set("https://raw.githubusercontent.com/theBowja/genshin-db/main/src/data/image/characters.json", CHARACTERS_IMAGE_JSON.as_bytes(), SystemTime::now())
+            .await?;
+        let user_cache = MemoryCache::new(String::from("./cache/u/"))?;
+        let mut api = Self::from(client, assets_cache, user_cache);
+        api.set_store(api.store().await.ok());
+        Ok(api)
+    }
     pub fn new() -> std::io::Result<Self> {
         let client = Self::client_builder();
         let client = client.build().ok();
-        let assets_cache =  MemoryCache::new(String::from("./cache/assets/"))?;
+        let assets_cache = MemoryCache::new(String::from("./cache/assets/"))?;
         let user_cache = MemoryCache::new(String::from("./cache/u/"))?;
         let mut api = Self::from(client, assets_cache, user_cache);
         if let Ok(rt) = tokio::runtime::Builder::new_current_thread()
@@ -103,8 +138,11 @@ impl EnkaNetwork {
         let lastupdate = SystemTime::now();
         Ok(RawUserData::from_raw(contents, uid, lastupdate))
     }
-    async fn request(&self, url: impl AsRef<str>) -> Result<Vec<u8>, Option<crate::reqwest::Error>> {
-        //println!("request {}",url.as_ref());
+    async fn request(
+        &self,
+        url: impl AsRef<str>,
+    ) -> Result<Vec<u8>, Option<crate::reqwest::Error>> {
+        // println!("request {}", url.as_ref());
         let url = url.as_ref().to_owned();
         let mut request = match &self.client {
             Some(v) => v.get(url),
@@ -139,7 +177,7 @@ impl EnkaNetwork {
     }
     pub async fn assets(&self, name: impl AsRef<str>) -> Result<Arc<Vec<u8>>, String> {
         let mut local_path = name.as_ref();
-        let base_url = if local_path.starts_with("store/") {
+        let base_url = if local_path.starts_with("store/") || local_path.starts_with("image/") {
             "https://github.com/EnkaNetwork/API-docs/raw/master/"
         } else if local_path.starts_with("ui/")
             || local_path.starts_with("img/")

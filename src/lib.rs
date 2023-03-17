@@ -113,3 +113,8 @@ pub(crate) fn get_or_null<'a>(
         None => std::borrow::Cow::Owned(serde_json::Value::Null),
     }
 }
+
+#[cfg(not(target_arch = "wasm32"))]
+pub(crate) use std::time::SystemTime;
+#[cfg(target_arch = "wasm32")]
+pub(crate) use wasm_timer::SystemTime;

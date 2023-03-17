@@ -6,6 +6,7 @@ use usvg::FitTo;
 
 use crate::{Element, EnkaNetwork, Stats};
 
+#[cfg(not(target_arch = "wasm32"))]
 const ICON_ZIP_URL: &str =
     "https://cdn.discordapp.com/attachments/819643218446254100/960919577867485204/icon.zip";
 
@@ -16,10 +17,27 @@ impl EnkaNetwork {
     }
 }
 impl IconData {
+    #[cfg(not(target_arch = "wasm32"))]
     pub async fn load(api: &EnkaNetwork) -> Self {
         let icon_zip = api.assets(ICON_ZIP_URL).await.unwrap();
         let icon_zip = icon_zip.as_ref();
         let mut zip_archive = zip::ZipArchive::new(std::io::Cursor::new(icon_zip)).unwrap();
+        let mut datas = HashMap::new();
+        for i in 0..zip_archive.len() {
+            let mut contents = zip_archive.by_index(i).unwrap();
+            if contents.is_file() {
+                let mut writer: Vec<u8> = vec![];
+                std::io::copy(&mut contents, &mut writer).unwrap();
+                let name = contents.name().to_owned();
+                datas.insert(name, writer);
+            }
+        }
+        Self(datas)
+    }
+    #[cfg(target_arch = "wasm32")]
+    pub async fn load(_: &EnkaNetwork) -> Self {
+        const ICON_ZIP: &[u8] = include_bytes!("../assets/icon.zip");
+        let mut zip_archive = zip::ZipArchive::new(std::io::Cursor::new(ICON_ZIP)).unwrap();
         let mut datas = HashMap::new();
         for i in 0..zip_archive.len() {
             let mut contents = zip_archive.by_index(i).unwrap();

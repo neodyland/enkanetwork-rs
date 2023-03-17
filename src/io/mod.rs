@@ -1,11 +1,11 @@
-#[cfg(all(not(target_arch = "wasm32"), feature = "async-io"))]
+#[cfg(not(target_arch = "wasm32"))]
 pub mod io_async;
-#[cfg(any(target_arch = "wasm32", not(feature = "async-io")))]
+#[cfg(target_arch = "wasm32")]
 pub mod io_std;
-#[cfg(all(not(target_arch = "wasm32"), feature = "async-io"))]
-pub use io_async::*;
-#[cfg(any(target_arch = "wasm32", not(feature = "async-io")))]
-pub use io_std::*;
+#[cfg(not(target_arch = "wasm32"))]
+pub(crate) use io_async::{read_file, write_file};
+#[cfg(target_arch = "wasm32")]
+pub(crate) use io_std::{read_file, write_file};
 
 mod memory_cache;
 pub use memory_cache::MemoryCache;
