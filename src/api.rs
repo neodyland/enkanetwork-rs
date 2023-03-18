@@ -26,8 +26,6 @@ impl EnkaNetwork {
     #[cfg(target_arch = "wasm32")]
     fn client_builder() -> ClientBuilder {
         Client::builder()
-            .timeout(std::time::Duration::from_secs(30))
-            .user_agent(crate::USER_AGENT)
     }
     //#[cfg(target_arch = "wasm32")]
     pub async fn new_wasm() -> std::io::Result<Self> {
@@ -144,7 +142,7 @@ impl EnkaNetwork {
         &self,
         url: impl AsRef<str>,
     ) -> Result<Vec<u8>, Option<crate::reqwest::Error>> {
-        // println!("request {}", url.as_ref());
+        println!("request {}", url.as_ref());
         let url = url.as_ref().to_owned();
         let mut request = match &self.client {
             Some(v) => v.get(url),
@@ -159,11 +157,12 @@ impl EnkaNetwork {
         Ok(body.to_vec())
     }
     pub async fn push_cache(&self, data: &RawUserData) -> std::io::Result<()> {
+        let now = SystemTime::now();
         self.user_cache
             .set(
                 format!("{}", data.uid()),
                 data.contents(),
-                data.lastupdate(),
+                now,
             )
             .await
         //let mut path=PathBuf::from(&self.user_cache_dir);

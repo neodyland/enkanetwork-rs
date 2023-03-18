@@ -58,7 +58,7 @@ impl MemoryCache {
         if self.limit_size > buf.as_ref().len() {
             let mut lock = self.cache.write().await;
             if lock.map.contains_key(local_path.as_ref()) {
-                return Ok(());
+                lock.map.remove(local_path.as_ref());
             }
             let data = buf.as_ref().to_vec();
             let lock = &mut *lock;

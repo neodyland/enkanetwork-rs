@@ -177,6 +177,12 @@ impl PlayerInfo {
     pub fn show_name_card_list(&self) -> &Vec<NameCard> {
         &self.name_card_list
     }
+    pub fn tower_floor_index(&self) -> u8 {
+        self.tower_floor_index
+    }
+    pub fn tower_level_index(&self) -> u8 {
+        self.tower_level_index
+    }
 }
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
 pub struct NameCard(pub(crate) u32);
