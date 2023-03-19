@@ -142,7 +142,7 @@ impl EnkaNetwork {
         &self,
         url: impl AsRef<str>,
     ) -> Result<Vec<u8>, Option<crate::reqwest::Error>> {
-        println!("request {}", url.as_ref());
+        // println!("request {}", url.as_ref());
         let url = url.as_ref().to_owned();
         let mut request = match &self.client {
             Some(v) => v.get(url),
@@ -159,11 +159,7 @@ impl EnkaNetwork {
     pub async fn push_cache(&self, data: &RawUserData) -> std::io::Result<()> {
         let now = SystemTime::now();
         self.user_cache
-            .set(
-                format!("{}", data.uid()),
-                data.contents(),
-                now,
-            )
+            .set(format!("{}", data.uid()), data.contents(), now)
             .await
         //let mut path=PathBuf::from(&self.user_cache_dir);
         //path.push(format!("{}",data.uid()));
