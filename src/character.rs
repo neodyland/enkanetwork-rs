@@ -1,7 +1,7 @@
 use std::{borrow::Cow, collections::HashMap, fmt::Display, str::FromStr};
 
 use image::DynamicImage;
-use serde_json::Value;
+use serde_json::{Number, Value};
 
 use crate::{ui_image, EnkaNetwork, FightProp, StoreValue};
 
@@ -660,8 +660,14 @@ fn parse_equip_weapon(entry: &Value) -> Option<Weapon> {
     }
     Some(Weapon {
         id,
-        level: weapon.get("level")?.as_u64()? as u8,
-        ascension: weapon.get("promoteLevel")?.as_u64()? as u8,
+        level: weapon
+            .get("level")
+            .unwrap_or(&Value::Number(Number::from_str("0").ok()?))
+            .as_u64()? as u8,
+        ascension: weapon
+            .get("promoteLevel")
+            .unwrap_or(&Value::Number(Number::from_str("0").ok()?))
+            .as_u64()? as u8,
         refinement: weapon.get("affixMap")?.get(format!("1{}", id))?.as_u64()? as u8,
         rarity: flat.get("rankLevel")?.as_u64()? as u8,
         icon: flat.get("icon")?.as_str()?.to_owned(),
