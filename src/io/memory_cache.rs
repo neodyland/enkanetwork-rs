@@ -41,8 +41,8 @@ impl MemoryCache {
         Ok(Self::from(Some(disk_dir), 32, 2 * 1024 * 1024))
     }
     #[cfg(target_arch = "wasm32")]
-    pub fn new(disk_dir: String) -> std::io::Result<Self> {
-        Ok(Self::from(Some(disk_dir), 32, 2 * 1024 * 1024))
+    pub fn new(_disk_dir: String) -> std::io::Result<Self> {
+        Ok(Self::from(None, 32, 2 * 1024 * 1024))
     }
     pub async fn set(
         &self,

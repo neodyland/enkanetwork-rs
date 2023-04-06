@@ -61,6 +61,9 @@ fn mearge_character_db(base: &mut Value, db: Value) -> Option<()> {
         if let Some(side_icon) = value["namesideicon"].as_str() {
             db_map.insert(side_icon, value);
         }
+        if let Some(side_icon) = value["filename_sideicon"].as_str() {
+            db_map.insert(side_icon, value);
+        }
     }
     let baseroot = base.as_object_mut()?;
     for (_, value) in baseroot {
@@ -70,6 +73,10 @@ fn mearge_character_db(base: &mut Value, db: Value) -> Option<()> {
                 value["nameiconcard"] = db_value["nameiconcard"].clone();
                 value["namegachasplash"] = db_value["namegachasplash"].clone();
                 value["namegachaslice"] = db_value["namegachaslice"].clone();
+                value["filename_icon"] = db_value["filename_icon"].clone();
+                value["filename_iconcard"] = db_value["filename_iconcard"].clone();
+                value["filename_gachasplash"] = db_value["filename_gachasplash"].clone();
+                value["filename_gachaslice"] = db_value["filename_gachaslice"].clone();
             }
         }
     }

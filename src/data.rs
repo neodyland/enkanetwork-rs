@@ -85,6 +85,9 @@ impl UserData {
     pub fn profile(&self) -> &PlayerInfo {
         &self.profile
     }
+    pub fn characters_vec(&self) -> Vec<Character> {
+        self.characters.values().map(|x| x.clone()).collect()
+    }
     pub fn character(&self, id: CharacterId) -> Option<&Character> {
         self.characters.get(&id)
     }
