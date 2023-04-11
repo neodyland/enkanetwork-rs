@@ -252,7 +252,8 @@ pub(crate) fn parse_character(api: &EnkaNetwork, player_character: &Value) -> Op
         costumes,
         current_costume,
         gachaslice: find(characters, "namegachaslice").or(find(characters, "filename_gachaslice")),
-        gachasplash: find(characters, "namegachasplash").or(find(characters, "filename_gachasplash")),
+        gachasplash: find(characters, "namegachasplash")
+            .or(find(characters, "filename_gachasplash")),
         icon: find(characters, "nameicon").or(find(characters, "filename_icon")),
         iconcard: find(characters, "nameiconcard").or(find(characters, "filename_iconcard")),
         friendship,
