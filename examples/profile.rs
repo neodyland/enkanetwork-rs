@@ -95,9 +95,14 @@ async fn profile_card(api: &EnkaNetwork, data: &UserData, font: &Font<'_>) -> Dy
     let name_card = profile.name_card();
     let name_card = async {
         let name_card = async {
-            match name_card.image(&api).await {
-                Ok(img) => img.resize(NAME_CARD_WIDTH, NAME_CARD_HEIGHT, image::imageops::Triangle),
-                Err(_) => DynamicImage::new_rgba8(NAME_CARD_WIDTH, NAME_CARD_HEIGHT),
+            match name_card {
+                Some(img) => match img.image(&api).await {
+                    Ok(img) => {
+                        img.resize(NAME_CARD_WIDTH, NAME_CARD_HEIGHT, image::imageops::Triangle)
+                    }
+                    Err(_) => DynamicImage::new_rgba8(NAME_CARD_WIDTH, NAME_CARD_HEIGHT),
+                },
+                None => DynamicImage::new_rgba8(NAME_CARD_WIDTH, NAME_CARD_HEIGHT),
             }
         };
         let profile_icon = async {

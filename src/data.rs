@@ -107,7 +107,7 @@ pub struct PlayerInfo {
     achievement: u32,
     tower_floor_index: u8,
     tower_level_index: u8,
-    name_card: NameCard,
+    name_card: Option<NameCard>,
     profile_picture: CharacterId,
     avatar_info_list: Vec<CharacterId>,
     name_card_list: Vec<NameCard>,
@@ -140,7 +140,7 @@ impl PlayerInfo {
             level: get(v, "level").as_u64().unwrap_or(0) as u8,
             world_level: get(v, "worldLevel").as_u64().unwrap_or(0) as u8,
             achievement: get(v, "finishAchievementNum").as_u64().unwrap_or(0) as u32,
-            name_card: NameCard(get(v, "nameCardId").as_u64().unwrap_or(0) as u32),
+            name_card: get(v, "nameCardId").as_u64().map(|f| NameCard(f as u32)),
             tower_floor_index: get(v, "towerFloorIndex").as_u64().unwrap_or(0) as u8,
             tower_level_index: get(v, "towerLevelIndex").as_u64().unwrap_or(0) as u8,
             profile_picture: CharacterId(
@@ -168,8 +168,16 @@ impl PlayerInfo {
     pub fn achievement(&self) -> u32 {
         self.achievement
     }
-    pub fn name_card(&self) -> NameCard {
+    pub fn name_card(&self) -> Option<NameCard> {
         self.name_card
+    }
+    pub async fn name_card_image(&self, api: &EnkaNetwork) -> Option<DynamicImage> {
+        if let Some(name_card) = self.name_card {
+            if name_card.has_value() {
+                return name_card.image(api).await.ok();
+            }
+        }
+        None
     }
     pub fn profile_picture(&self) -> CharacterId {
         self.profile_picture
