@@ -114,7 +114,7 @@ async fn characters(api: &EnkaNetwork) -> Result<Value, String> {
     }
     let mut base = _store(api, "characters.json").await?;
     let raw = api
-        .assets("https://raw.githubusercontent.com/theBowja/genshin-db/main/src/data/image/characters.json")
+        .assets("https://raw.githubusercontent.com/neodyland/genshin-db/main/src/data/image/characters.json")
         .await?;
     let db: Result<Value, serde_json::Error> = serde_json::from_slice(&raw);
     let db = match db {
