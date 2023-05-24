@@ -234,16 +234,25 @@ impl EnkaNetwork {
             }
         }
     }
-    pub async fn simple(&self, uid: i32) -> Result<UserData, String> {
+    pub async fn simple(&self, uid: i32) -> Result<(UserData, bool), String> {
         match self.find_cache(uid).await {
             Some(cache) => {
                 let data = cache.resolve(self)?;
                 if self.is_offline_mode() {
-                    Ok(data)
+                    Ok((data, false))
                 } else {
-                    match self.reload(&data).await? {
-                        Some(new) => Ok(new),
-                        None => Ok(data),
+                    match self.reload(&data).await {
+                        Ok(u) => match u {
+                            Some(new) => Ok((new, false)),
+                            None => Ok((data, false)),
+                        },
+                        Err(e) => {
+                            if e.contains("424") {
+                                Ok((data, true))
+                            } else {
+                                Err(e)
+                            }
+                        }
                     }
                 }
             }
@@ -252,7 +261,7 @@ impl EnkaNetwork {
                 match userdata {
                     Ok(userdata) => {
                         let _ = self.push_cache(&userdata).await;
-                        userdata.resolve(self)
+                        Ok((userdata.resolve(self)?, false))
                     }
                     Err(e) => Err(match e {
                         Some(e) => format!("{}", e),

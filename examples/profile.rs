@@ -32,6 +32,7 @@ async fn create_user_data(
     let data = api.simple(uid).await;
     match data {
         Ok(data) => {
+            let (data, _) = data;
             std::fs::create_dir_all("./img/").unwrap();
             let profile = data.profile();
             println!(
