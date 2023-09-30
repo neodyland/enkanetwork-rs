@@ -8,7 +8,7 @@ use crate::{Element, EnkaNetwork, Stats};
 
 #[cfg(not(target_arch = "wasm32"))]
 const ICON_ZIP_URL: &str =
-    "https://cdn.discordapp.com/attachments/819643218446254100/960919577867485204/icon.zip";
+    "https://raw.githubusercontent.com/neodyland/enkanetwork-rs/master/assets/icon.zip";
 
 pub struct IconData(HashMap<String, Vec<u8>>);
 impl EnkaNetwork {
